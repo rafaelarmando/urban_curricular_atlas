@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-# --- 1. PAGE CONFIGURATION ---
+# --- 1. PAGE CONFIGURATION --- tests
 st.set_page_config(page_title="Urban Curriculum Atlas", layout="wide")
 
 # Sidebar
