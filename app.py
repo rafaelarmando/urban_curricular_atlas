@@ -72,29 +72,53 @@ Using data from the **Math, Science, and History** catalogs to analyze:
 tab1, tab2, tab3 = st.tabs(["🌍 DEIB Heatmap", "⚖️ Homework Balance", "🔎 Course Explorer"])
 
 # --- TAB 1: DEIB ANALYSIS ---
+# --- TAB 1: DEIB ANALYSIS ---
 with tab1:
     st.header("Mapping 'Urban Includes'")
-    st.write("Which departments are carrying the weight of the DEIB strategic plan?")
+    st.markdown("Which departments are carrying the weight of the DEIB (Diversity, Equity, Inclusion, Belonging) strategic plan?")
     
+    # --- CUSTOM LEGEND ---
+    st.markdown("### 🔑 Legend: DEIB Intensity")
+    leg1, leg2, leg3 = st.columns(3)
+    with leg1:
+        st.success("🟢 **High Focus**")
+        st.caption("Course description explicitly centers equity, race, justice, or identity.")
+    with leg2:
+        st.info("🔵 **Medium Focus**")
+        st.caption("Course includes DEIB case studies or units (e.g., Ethics in Data).")
+    with leg3:
+        st.error("🔴 **Low/Standard Focus**")
+        st.caption("Standard technical curriculum with no explicit DEIB mention in catalog.")
+    
+    st.divider()
+
     col1, col2 = st.columns([2, 1])
     
     with col1:
-        # Sunburst Chart showing Dept -> Tag -> Course
+        # Sunburst Chart with Explicit Color Mapping
         fig_sun = px.sunburst(
-            df[df['DEIB Focus'] != 'Low'],
-            path=['Dept', 'DEIB Tag', 'Course'],
+            df, # Use full dataframe to show what is MISSING too
+            path=['Dept', 'DEIB Focus', 'Course'],
+            values='Homework (Hrs)', # Sizing by workload helps visualize impact
             color='DEIB Focus',
-            color_discrete_map={'High': '#00CC96', 'Medium': '#636EFA'},
-            title="Distribution of Explicit DEIB Content"
+            # explicitly mapping the colors to match our legend above
+            color_discrete_map={
+                'High': '#00C853',  # Bright Green
+                'Medium': '#2962FF', # Bright Blue
+                'Low': '#D50000'     # Red (to highlight gaps)
+            },
+            title="Curriculum Audit: DEIB Distribution"
         )
+        # Update layout to hide the automatic plotly legend since we made a better custom one
+        fig_sun.update_layout(showlegend=False)
         st.plotly_chart(fig_sun, use_container_width=True)
 
     with col2:
-        st.info("**Strategic Insight:**")
+        st.subheader("💡 Strategic Insights")
         st.markdown("""
-        * **History** is the primary driver of DEIB content (Race, Gender, Colonialism).
-        * **Science** has emerging nodes in *Genetics*, *Public Health*, and *Climate Justice*.
-        * **Math** offers specific entry points via *Data Ethics*.
+        * **The 'Red' Zone:** Notice how much of the **Math** and **Science** outer rings are red. This isn't a failure, but it is an *opportunity* for the Program Innovation Committee.
+        * **The 'Green' Anchors:** **History** (Green) is currently doing the heavy lifting for the 'Urban Includes' goal.
+        * **The Bridge:** **Data Science** is one of the few 'Green' wedges in the Math section. We need to expand that wedge.
         """)
 
 # --- TAB 2: HOMEWORK & WELLNESS ---
